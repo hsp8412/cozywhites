@@ -111,11 +111,10 @@ export default function AppointmentModal({
           id: crypto.randomUUID(),
           start: slotInfo.start,
           end: slotInfo.end,
-          title: `${values.type} with ${
-            patients.find((p) => p.id === values.patientId)?.name ||
+          title: `${values.type} with ${patients.find((p) => p.id === values.patientId)?.name ||
             "" ||
             "New Client"
-          }`,
+            }`,
           type: values.type,
           client: patients.find((p) => p.id === values.patientId)?.name || "",
           staff: selectedStaff?.name || "",
@@ -132,6 +131,13 @@ export default function AppointmentModal({
           phoneNumber: values.phoneNumber,
           createdAt: new Date(),
         };
+
+        const existingPatient = patients.find((p) => p.phoneNumber === values.phoneNumber);
+        if (existingPatient) {
+          setOpen(false);
+          toast.error(` Failed to create an appointment! Patient ${existingPatient.name} Already exists with this phone number`);
+          return;
+        }
         createPatient(patient);
         const appointment: Appointment = {
           id: crypto.randomUUID(),

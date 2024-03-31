@@ -9,13 +9,17 @@ const PatientsTab = () => {
   let filteredPatients = patients;
   if (searchTerm !== "") {
     filteredPatients = patients.filter((p) => {
-      return p.name.toLowerCase().includes(searchTerm.toLowerCase());
+      return (
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.phoneNumber.includes(searchTerm) ||
+        p.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     });
   }
 
   return (
     <div className="tabContainer flex flex-col items-center py-5 w-full">
-      <p className={"text-gray-600"}>
+      <p className={"text-gray-600 font-bold"}>
         Instructions: select a patient to check his/her info.
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -30,13 +34,13 @@ const PatientsTab = () => {
                   setSelectedPatient(patient);
                 }}
               >
-                <h1> {patient.name} </h1>
-
-                <p>
-                  <strong>Email:</strong> {patient.email}
-                </p>
-                <p>
+                <h1 className={"text-center"}> {patient.name} </h1>
+                <p className={"text-center"}>
                   <strong>Phone Number:</strong> {patient.phoneNumber}
+                </p>
+                <p className={"text-center"}>
+                  <strong>Email:</strong>{" "}
+                  {patient.email ? patient.email : "No data"}
                 </p>
               </div>
             );

@@ -3,7 +3,7 @@ import { createContext, ReactNode, useState } from "react";
 // patient data
 const initialPatients: Patient[] = [
   {
-    id: 1,
+    id: "1",
     name: "Alice Green",
     gender: "female",
     phoneNumber: "6666666666",
@@ -15,12 +15,60 @@ const initialPatients: Patient[] = [
     notes: "This is a new patient",
   },
   {
-    id: 2,
+    id: "2",
     name: "James Brown",
     gender: "male",
     phoneNumber: "6666666666",
     address: "2500 University Drive NW, Calgary, Alberta",
     email: "123@ucalgary.ca",
+    dob: new Date(),
+    insurance: "111111111",
+    createdAt: new Date(),
+    notes: "This is a new patient",
+  },
+  {
+    id: "3",
+    name: "John Doe",
+    gender: "male",
+    phoneNumber: "6666666666",
+    address: "2500 University Drive NW, Calgary, Alberta",
+    email: "1231@ucalgary.ca",
+    dob: new Date(),
+    insurance: "111111111",
+    createdAt: new Date(),
+    notes: "This is a new patient",
+  },
+  {
+    id: "4",
+    name: "Jane Doe",
+    gender: "female",
+    phoneNumber: "9993333333",
+    address: "2500 University Drive NW, Calgary, Alberta",
+    email: "12131@ucalgary.ca",
+    dob: new Date(),
+    insurance: "111111111",
+    createdAt: new Date(),
+    notes: "This is a new patient",
+  },
+  {
+    id: "5",
+    name: "Tom Lee",
+    gender: "male",
+    phoneNumber: "8898889987",
+    address: "2500 University Drive NW, Calgary, Alberta",
+    email: "12131@ucalgary.ca",
+    dob: new Date(),
+    insurance: "111111111",
+    createdAt: new Date(),
+    notes: "This is a new patient",
+  },
+  {
+    id: "6",
+    name: "Edward Lee",
+    gender: "male",
+    phoneNumber: "3343321122",
+    address: "2500 University Drive NW, Calgary, Alberta",
+    email: "12131@ucalgary.ca",
     dob: new Date(),
     insurance: "111111111",
     createdAt: new Date(),
@@ -35,7 +83,7 @@ export type Patient = {
   gender?: string;
   phoneNumber: string;
   address?: string;
-  email: string;
+  email?: string;
   dob?: Date;
   insurance?: string;
   createdAt: Date;

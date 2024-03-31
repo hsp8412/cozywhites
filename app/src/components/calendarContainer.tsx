@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import AppointmentCalendar from "./AppointmentCalendar";
 import { StaffContext } from "../contexts/staffContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { PatientsContext } from "../contexts/patientsContext";
 
 const CalendarContainer = () => {
@@ -36,7 +36,10 @@ const CalendarContainer = () => {
         </h6>
         <div></div>
       </div>
-
+      <div className={"text-xl font-bold p-0 mt-3 text-gray-700"}>
+        Instructions: Click on an empty calendar slot to create a new
+        appointment.
+      </div>
       <AppointmentCalendar />
     </div>
   );

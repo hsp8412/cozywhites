@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../util";
 
 const ConfirmCancelModal = ({ open, setOpen }: any) => {
   const {
@@ -26,9 +27,20 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
           size="4x"
         />
         {/*Text content*/}
-        <div className="mt-4 text-xl">
+        <div className="mt-4 text-xl font-semibold">
           Are you sure to cancel the appointment for{" "}
-          {selectedAppointment?.client} with {selectedAppointment?.staff}?
+          <span className={"text-red-600"}>{selectedAppointment?.client}</span>{" "}
+          with{" "}
+          <span className={"text-red-600"}>{selectedAppointment?.staff}</span>{" "}
+          at{" "}
+          <span className={"text-red-600"}>
+            {formatDateTime(
+              new Date(
+                selectedAppointment ? selectedAppointment.start || "" : ""
+              )
+            )}
+          </span>
+          ?
         </div>
       </section>
 
@@ -36,7 +48,7 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
       <section className="flex justify-center gap-4 mt-1 mb-4">
         {/*Confirm button*/}
         <button
-          className="px-3 py-2 bg-rose-500 rounded text-white hover:bg-rose-300"
+          className="px-3 py-2 bg-rose-500 rounded text-white hover:bg-rose-300 font-semibold"
           onClick={() => {
             if (selectedAppointment) {
               deleteAppointment(selectedAppointment.id);
@@ -46,14 +58,14 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
             }
           }}
         >
-          Delete Appointment
+          Cancel Appointment
         </button>
         {/*Cancel button*/}
         <button
-          className="px-3 py-2 bg-gray-500 rounded text-white hover:bg-gray-400"
+          className="px-3 py-2 bg-gray-500 rounded text-white hover:bg-gray-400 font-semibold"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          Close
         </button>
       </section>
     </Modal>

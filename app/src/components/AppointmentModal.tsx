@@ -16,6 +16,9 @@ import {
   AppointmentsContext,
 } from "../contexts/appointmentsContext";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+import CloseButton from "./closeButton";
 
 const options = [
   {
@@ -29,9 +32,9 @@ const options = [
     value: "Checkup",
   },
   {
-    key: "Cavity",
-    text: "Cavity",
-    value: "Cavity",
+    key: "Filling",
+    text: "Filling",
+    value: "Filling",
   },
 ];
 
@@ -101,11 +104,6 @@ export default function AppointmentModal({
         then: (schema) => schema.required("Phone number is required"),
         otherwise: (schema) => schema.notRequired(),
       }),
-      email: Yup.string().when("existing", {
-        is: false,
-        then: (schema) => schema.required("Email is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
     }),
     onSubmit: (values, formikHelpers) => {
       if (values.existing) {
@@ -123,6 +121,7 @@ export default function AppointmentModal({
           staff: selectedStaff?.name || "",
           clientId: values.patientId,
           staffId: selectedStaff?.id,
+          checkIn: false,
         };
         addAppointment(appointment);
       } else {
@@ -144,6 +143,7 @@ export default function AppointmentModal({
           staff: selectedStaff?.name || "",
           clientId: patient.id,
           staffId: selectedStaff?.id,
+          checkIn: false,
         };
         addAppointment(appointment);
         formikHelpers.resetForm();
@@ -166,27 +166,40 @@ export default function AppointmentModal({
     setOpen(false);
   };
 
+  const maxLength = patients.reduce(
+    (max, { name }) => Math.max(max, name.length),
+    0
+  );
+
+  function formatPatientData(patient: Patient, maxLength: number) {
+    const padding = " ".repeat(maxLength - patient.name.length);
+    console.log(`${patient.name}${padding} (${patient.phoneNumber})`);
+    return `${patient.name}${padding} (${patient.phoneNumber})`;
+  }
+
   return (
-    <Modal
-      onClose={handleClose}
-      closeIcon
-      onOpen={() => setOpen(true)}
-      open={open}
-    >
+    <Modal onClose={handleClose} onOpen={() => setOpen(true)} open={open}>
       {slotInfo && (
         <ModalHeader>
-          Appointment: {slotInfo.start.toLocaleDateString(undefined, format)},{" "}
-          {slotInfo.start.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}
-          -
-          {slotInfo.end.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}{" "}
+          <div className={"flex justify-between items-center"}>
+            <div className={"text-2xl"}>
+              <FontAwesomeIcon icon={faCalendarCheck} className={"me-2"} />
+              Appointment:{" "}
+              {slotInfo.start.toLocaleDateString(undefined, format)},{" "}
+              {slotInfo.start.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}
+              -
+              {slotInfo.end.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}{" "}
+            </div>
+            <CloseButton handleClose={handleClose} />
+          </div>
         </ModalHeader>
       )}
       <ModalContent className="modalContent">
@@ -244,11 +257,13 @@ export default function AppointmentModal({
                   }}
                   value={values.patientId}
                   selection
-                  options={patients.map((patient: Patient) => ({
-                    key: patient.id,
-                    text: patient.name,
-                    value: patient.id,
-                  }))}
+                  options={patients.map((patient: Patient) => {
+                    return {
+                      key: patient.id,
+                      text: `${patient.name} (${patient.phoneNumber})`,
+                      value: patient.id,
+                    };
+                  })}
                 />
               </div>
               {errors.patientId && (
@@ -322,28 +337,6 @@ export default function AppointmentModal({
               {errors.lastName && (
                 <p className={"text-red-700"}>{errors.lastName}*</p>
               )}
-
-              <div className={"mt-4"}>
-                <div id={"email"} className={"flex items-center"}>
-                  <label className={"input-label text-xl font-semibold"}>
-                    Email<span className={"text-red-700"}>*</span>
-                  </label>
-                  <div className="ui input w-full">
-                    <input
-                      name={"email"}
-                      type="email"
-                      placeholder="Enter email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      className={"full-width"}
-                    />
-                  </div>
-                </div>
-              </div>
-              {errors.email && (
-                <p className={"text-red-700"}>{errors.email}*</p>
-              )}
               <div className={"mt-4"}>
                 <div
                   id={"phone-number"}
@@ -367,6 +360,28 @@ export default function AppointmentModal({
               {errors.phoneNumber && (
                 <p className={"text-red-700"}>{errors.phoneNumber}*</p>
               )}
+              <div className={"mt-4"}>
+                <div id={"email"} className={"flex items-center"}>
+                  <label className={"input-label text-xl font-semibold"}>
+                    Email
+                  </label>
+                  <div className="ui input w-full">
+                    <input
+                      name={"email"}
+                      type="email"
+                      placeholder="Enter email"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.email}
+                      className={"full-width"}
+                    />
+                  </div>
+                </div>
+              </div>
+              {errors.email && (
+                <p className={"text-red-700"}>{errors.email}*</p>
+              )}
+
               <div className="mt-4">
                 <label className={"text-xl font-semibold"}>Notes:</label>
                 <textarea
@@ -387,7 +402,7 @@ export default function AppointmentModal({
                   />
                 )}
                 <Button
-                  content="Save"
+                  content="Create"
                   labelPosition="right"
                   icon="checkmark"
                   type={"submit"}

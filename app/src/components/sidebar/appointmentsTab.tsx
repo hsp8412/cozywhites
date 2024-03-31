@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { PatientsContext } from "../../contexts/patientsContext";
 import SearchBar from "./searchBar";
 import { AppointmentsContext } from "../../contexts/appointmentsContext";
+import { StaffContext } from "../../contexts/staffContext";
 
 const AppointmentsTab = () => {
   const {
@@ -9,6 +10,9 @@ const AppointmentsTab = () => {
     setSelectedAppointment,
     setOpenExistingAppointmentModal,
   } = useContext(AppointmentsContext);
+  const { patients } = useContext(PatientsContext);
+  const { staff, setSelectedStaff, setView, setDate } =
+    useContext(StaffContext);
   const [searchTerm, setSearchTerm] = useState("");
 
   let filteredAppointments = appointments;
@@ -16,13 +20,21 @@ const AppointmentsTab = () => {
     filteredAppointments = appointments.filter((a) => {
       return (
         a.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.staff.toLowerCase().includes(searchTerm.toLowerCase())
+        a.staff.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.start.toLocaleDateString("en-US").includes(searchTerm) ||
+        patients
+          .filter((p) => p.id == a.clientId)[0]
+          .phoneNumber.includes(searchTerm) ||
+        patients
+          .filter((p) => p.id == a.clientId)[0]
+          .email?.includes(searchTerm)
       );
     });
   }
+
   return (
     <div className="tabContainer flex flex-col items-center py-5 w-full">
-      <p className={"text-gray-600"}>
+      <p className={"text-gray-600 font-bold"}>
         Instructions: select an appointment to edit/cancel it.
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -32,14 +44,28 @@ const AppointmentsTab = () => {
             return (
               <div
                 key={index}
-                className="w-full flex flex-col justify-center items-center py-7 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
+                className="w-full flex flex-col justify-center items-center py-4 px-5 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   setSelectedAppointment(appointment);
                   setOpenExistingAppointmentModal(true);
+                  setSelectedStaff(
+                    staff.filter((s) => s.id == appointment.staffId)[0]
+                  );
+                  setView("day");
+                  setDate(appointment.start);
                 }}
               >
-                <div className="header">
-                  <p className={"text-2xl font-semibold"}>
+                <div className={"mb-3"}>
+                  <p className={"text-2xl font-bold text-gray-600"}>
+                    {appointment.start.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="header text-center">
+                  <p className={"text-xl font-semibold"}>
                     {appointment.start.toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",

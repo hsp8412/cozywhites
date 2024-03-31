@@ -17,6 +17,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import PatientEditForm from "./PatientEditForm";
+import CloseButton from "./closeButton";
 
 const PatientInfoModal = () => {
   const { selectedPatient, setSelectedPatient, editPatient, setEditPatient } =
@@ -36,7 +37,7 @@ const PatientInfoModal = () => {
       >
         <ModalHeader>
           <div className={"modal-header"}>
-            <div>
+            <div className={"text-3xl"}>
               {editPatient ? (
                 <FontAwesomeIcon icon={faUserPen} className={"me-2"} />
               ) : (
@@ -44,9 +45,7 @@ const PatientInfoModal = () => {
               )}
               {editPatient ? "Edit Patient Info" : "Patient Info"}
             </div>
-            <button className="close-button" onClick={handleClose}>
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
+            <CloseButton handleClose={handleClose} />
           </div>
         </ModalHeader>
         <ModalContent className="modal-content">
@@ -80,7 +79,7 @@ const PatientInfoModal = () => {
               <div className="row">
                 <p className="info-entry">
                   Date Created:{" "}
-                  {moment(selectedPatient?.createdAt).format("MM/DD/YYYY")}
+                  {moment(selectedPatient?.createdAt).format("MMMM D, YYYY")}
                 </p>
               </div>
               <div className="row">
@@ -101,14 +100,6 @@ const PatientInfoModal = () => {
                 onClick={() => setEditPatient(true)}
                 labelPosition="right"
                 icon="edit"
-              />
-
-              <Button
-                content={"Close"}
-                negative
-                onClick={handleClose}
-                labelPosition="right"
-                icon="cancel"
               />
             </div>
           )}

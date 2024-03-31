@@ -36,7 +36,10 @@ const CalendarContainer = () => {
         </h6>
         <div></div>
       </div>
-
+      <div className={"text-xl font-bold p-0 mt-3 text-gray-700"}>
+        Instructions: Click on an empty calendar slot to create a new
+        appointment.
+      </div>
       <AppointmentCalendar />
     </div>
   );

@@ -18,6 +18,7 @@ import {
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+import CloseButton from "./closeButton";
 
 const options = [
   {
@@ -176,32 +177,29 @@ export default function AppointmentModal({
     return `${patient.name}${padding} (${patient.phoneNumber})`;
   }
 
-
   return (
-    <Modal
-      onClose={handleClose}
-      closeIcon
-      onOpen={() => setOpen(true)}
-      open={open}
-    >
+    <Modal onClose={handleClose} onOpen={() => setOpen(true)} open={open}>
       {slotInfo && (
         <ModalHeader>
-          <FontAwesomeIcon icon={faCalendarCheck} className={"me-2"} />
-          Appointment: {slotInfo.start.toLocaleDateString(
-            undefined,
-            format
-          )},{" "}
-          {slotInfo.start.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}
-          -
-          {slotInfo.end.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}{" "}
+          <div className={"flex justify-between items-center"}>
+            <div className={"text-2xl"}>
+              <FontAwesomeIcon icon={faCalendarCheck} className={"me-2"} />
+              Appointment:{" "}
+              {slotInfo.start.toLocaleDateString(undefined, format)},{" "}
+              {slotInfo.start.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}
+              -
+              {slotInfo.end.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}{" "}
+            </div>
+            <CloseButton handleClose={handleClose} />
+          </div>
         </ModalHeader>
       )}
       <ModalContent className="modalContent">
@@ -404,7 +402,7 @@ export default function AppointmentModal({
                   />
                 )}
                 <Button
-                  content="Save"
+                  content="Create"
                   labelPosition="right"
                   icon="checkmark"
                   type={"submit"}

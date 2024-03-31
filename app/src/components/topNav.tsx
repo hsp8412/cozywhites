@@ -8,7 +8,7 @@ import { StaffContext } from "../contexts/staffContext";
 const TopNav = () => {
   const [time, setTime] = useState(new Date());
   const { setSelectedPatient } = useContext(PatientsContext);
-  const { setSelectedStaff } = useContext(StaffContext);
+  const { setSelectedStaff, resetCalendar } = useContext(StaffContext);
 
   let format: any = { month: "long", day: "numeric" };
 
@@ -25,6 +25,7 @@ const TopNav = () => {
   const handleReset = () => {
     setSelectedStaff(null);
     setSelectedPatient(null);
+    resetCalendar();
   };
 
   return (

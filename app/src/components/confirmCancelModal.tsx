@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
 import { toast } from "react-toastify";
+import { formatDateTime } from "../util";
 
 const ConfirmCancelModal = ({ open, setOpen }: any) => {
   const {
@@ -30,7 +31,16 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
           Are you sure to cancel the appointment for{" "}
           <span className={"text-red-600"}>{selectedAppointment?.client}</span>{" "}
           with{" "}
-          <span className={"text-red-600"}>{selectedAppointment?.staff}</span>?
+          <span className={"text-red-600"}>{selectedAppointment?.staff}</span>{" "}
+          at{" "}
+          <span className={"text-red-600"}>
+            {formatDateTime(
+              new Date(
+                selectedAppointment ? selectedAppointment.start || "" : ""
+              )
+            )}
+          </span>
+          ?
         </div>
       </section>
 
@@ -48,7 +58,7 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
             }
           }}
         >
-          Cancel
+          Cancel Appointment
         </button>
         {/*Cancel button*/}
         <button

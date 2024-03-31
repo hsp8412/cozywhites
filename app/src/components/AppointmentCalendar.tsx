@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Calendar, momentLocalizer, SlotInfo } from "react-big-calendar";
+import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../styles/AppointmentCalendar.scss";
 import AppointmentModal from "./AppointmentModal";
 import { PatientsContext } from "../contexts/patientsContext";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
-import {StaffContext} from "../contexts/staffContext";
+import { StaffContext } from "../contexts/staffContext";
 const localizer = momentLocalizer(moment);
 
 export default function AppointmentCalendar() {
@@ -27,7 +27,8 @@ export default function AppointmentCalendar() {
     openExistingAppointmentModal,
     setOpenExistingAppointmentModal,
   } = useContext(AppointmentsContext);
-  const {selectedStaff} = useContext(StaffContext)
+  const { selectedStaff, view, date, setView, setDate } =
+    useContext(StaffContext);
 
   const filteredByStaff = appointments.filter(
     (a) => a.staffId == selectedStaff?.id
@@ -94,6 +95,22 @@ export default function AppointmentCalendar() {
   // };
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
+    if (
+      slotInfo.start < new Date() ||
+      view === "month" ||
+      slotInfo.start.getHours() === 12 ||
+      slotInfo.start.getHours() < 8 ||
+      slotInfo.start.getHours() > 16 ||
+      slotInfo.start.getDay() % 6 === 0
+    )
+      return;
+
+    const conflict = filteredByStaff.some(
+      (app) => app.start.toLocaleString() === slotInfo.start.toLocaleString()
+    );
+
+    if (conflict) return;
+
     setSlotInfo(slotInfo);
     setOpen(true);
   };
@@ -121,18 +138,18 @@ export default function AppointmentCalendar() {
   // based on some conditions
   const slotPropGetter = (date: Date) => {
     const noon = new Date();
-    noon.setHours(12,0,0,0);
-    
+    noon.setHours(12, 0, 0, 0);
+
     const isNoon = date.getHours() === noon.getHours();
     const isWeekend = date.getDay() % 6 === 0;
     const isDisabled = isNoon || isWeekend;
     if (isDisabled) {
       return {
-        className: "disabled-slot"
-      }
+        className: "disabled-slot",
+      };
     }
-    return {className: ""}
-  }
+    return { className: "" };
+  };
 
   return (
     <div className={"w-full"}>
@@ -153,6 +170,10 @@ export default function AppointmentCalendar() {
           style={{ height: 600 }}
           slotPropGetter={slotPropGetter}
           timeslots={1}
+          view={view}
+          onView={(view) => setView(view)}
+          date={date}
+          onNavigate={(date) => setDate(date)}
         />
       </div>
     </div>

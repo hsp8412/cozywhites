@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { PatientsContext } from "../../contexts/patientsContext";
 import SearchBar from "./searchBar";
 import { AppointmentsContext } from "../../contexts/appointmentsContext";
+import { StaffContext } from "../../contexts/staffContext";
 
 const AppointmentsTab = () => {
   const {
@@ -10,6 +11,8 @@ const AppointmentsTab = () => {
     setOpenExistingAppointmentModal,
   } = useContext(AppointmentsContext);
   const { patients } = useContext(PatientsContext);
+  const { staff, setSelectedStaff, setView, setDate } =
+    useContext(StaffContext);
   const [searchTerm, setSearchTerm] = useState("");
 
   let filteredAppointments = appointments;
@@ -17,14 +20,21 @@ const AppointmentsTab = () => {
     filteredAppointments = appointments.filter((a) => {
       return (
         a.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.staff.toLowerCase().includes(searchTerm.toLowerCase())
+        a.staff.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.start.toLocaleDateString("en-US").includes(searchTerm) ||
+        patients
+          .filter((p) => p.id == a.clientId)[0]
+          .phoneNumber.includes(searchTerm) ||
+        patients
+          .filter((p) => p.id == a.clientId)[0]
+          .email?.includes(searchTerm)
       );
     });
   }
 
   return (
     <div className="tabContainer flex flex-col items-center py-5 w-full">
-      <p className={"text-gray-600"}>
+      <p className={"text-gray-600 font-bold"}>
         Instructions: select an appointment to edit/cancel it.
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -38,6 +48,11 @@ const AppointmentsTab = () => {
                 onClick={() => {
                   setSelectedAppointment(appointment);
                   setOpenExistingAppointmentModal(true);
+                  setSelectedStaff(
+                    staff.filter((s) => s.id == appointment.staffId)[0]
+                  );
+                  setView("day");
+                  setDate(appointment.start);
                 }}
               >
                 <div className={"mb-3"}>

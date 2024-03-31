@@ -3,7 +3,8 @@ import { StaffContext } from "../../contexts/staffContext";
 import SearchBar from "./searchBar";
 
 const StaffTab = () => {
-  const { staff, selectedStaff, setSelectedStaff } = useContext(StaffContext);
+  const { staff, selectedStaff, setSelectedStaff, resetCalendar } =
+    useContext(StaffContext);
   const [searchTerm, setSearchTerm] = useState("");
 
   let filteredStaff = staff;
@@ -14,7 +15,7 @@ const StaffTab = () => {
   }
 
   return (
-    <div className="tabContainer flex flex-col items-center py-5 w-full">
+    <div className="tabContainer flex flex-col items-center py-5 w-full font-bold">
       <p className={"text-gray-600"}>
         Instructions: select a staff below to create a new patient appointment.
       </p>
@@ -25,9 +26,14 @@ const StaffTab = () => {
             return (
               <div
                 key={index}
-                className={`${selectedStaff?.id === staff.id?"border-2 border-primary":""} w-full flex flex-col justify-center items-center py-2 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer`}
+                className={`${
+                  selectedStaff?.id === staff.id
+                    ? "border-2 border-primary"
+                    : ""
+                } w-full flex flex-col justify-center items-center py-2 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer`}
                 onClick={() => {
                   setSelectedStaff(staff);
+                  resetCalendar();
                 }}
               >
                 <div

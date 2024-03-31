@@ -151,6 +151,33 @@ export default function AppointmentCalendar() {
     return { className: "" };
   };
 
+  const eventStyleGetter = (
+    event: any,
+    start: any,
+    end: any,
+    isSelected: any
+  ) => {
+    let backgroundColor = "#3174ad"; // default color
+    console.log(event);
+    if (event.type.toLowerCase() === "filling") {
+      backgroundColor = "#1db552";
+    } else if (event.type.toLowerCase() === "cleaning") {
+      backgroundColor = "#f03e1a";
+    }
+    // Add more conditions for other types with their respective colors
+    const style = {
+      backgroundColor: backgroundColor,
+      borderRadius: "0px",
+      opacity: 0.8,
+      color: "white",
+      border: "0px",
+      display: "block",
+    };
+    return {
+      style: style,
+    };
+  };
+
   return (
     <div className={"w-full"}>
       <AppointmentModal open={open} setOpen={setOpen} slotInfo={slotInfo} />
@@ -174,6 +201,7 @@ export default function AppointmentCalendar() {
           onView={(view) => setView(view)}
           date={date}
           onNavigate={(date) => setDate(date)}
+          eventPropGetter={eventStyleGetter}
         />
       </div>
     </div>

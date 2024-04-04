@@ -104,6 +104,12 @@ const ExistingAppointmentModal = () => {
     }),
     enableReinitialize: true,
     onSubmit: (values) => {
+      if (selectedAppointment && selectedAppointment.start < new Date()) {
+        toast.error("You cannot edit an appointment that has already started");
+        setOpenExistingAppointmentModal(false);
+        setSelectedAppointment(null);
+        return;
+      }
       if (selectedAppointment) {
         const updatedAppointment: Appointment = {
           ...selectedAppointment,

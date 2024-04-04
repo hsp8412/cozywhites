@@ -13,6 +13,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AppointmentsContext } from "../contexts/appointmentsContext";
 
 const PatientEditForm = () => {
   const {
@@ -22,6 +23,7 @@ const PatientEditForm = () => {
     setSelectedPatient,
     updatePatient,
   } = useContext(PatientsContext);
+  const { appointments, editAppointment } = useContext(AppointmentsContext);
   const formik = useFormik({
     initialValues: {
       firstName: selectedPatient ? selectedPatient.name.split(" ")[0] : "",
@@ -57,6 +59,19 @@ const PatientEditForm = () => {
         createdAt: selectedPatient?.createdAt || new Date(),
       };
       updatePatient(updatedPatient);
+      const appointmentsToUpdate = appointments.filter(
+        (a) => a.clientId == selectedPatient?.id
+      );
+      console.log(appointmentsToUpdate);
+      appointmentsToUpdate.forEach((a) => {
+        const updatedAppointment = {
+          ...a,
+          client: updatedPatient.name,
+          title: `${a.type} with ${updatedPatient.name}`,
+        };
+        console.log(a.id, updatedAppointment);
+        editAppointment(a.id, updatedAppointment);
+      });
       setSelectedPatient(null);
       toast.success("Patient updated successfully");
     },

@@ -40,9 +40,9 @@ const options = [
 
 const staffOptions = [
   {
-    key: "Dr.Smith",
-    text: "Dr.Smith",
-    value: "Dr.Smith",
+    key: "Dr. Smith",
+    text: "Dr. Smith",
+    value: "Dr. Smith",
   },
   {
     key: "John Grey",

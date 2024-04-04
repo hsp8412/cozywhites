@@ -112,7 +112,6 @@ const ExistingAppointmentModal = () => {
           type: values.type,
           title: `${values.type} with ${client?.name}`,
         };
-        console.log(updatedAppointment);
         editAppointment(selectedAppointment.id, updatedAppointment);
         // setSelectedAppointment(null);
         toast.success("Appointment updated successfully");
@@ -130,6 +129,10 @@ const ExistingAppointmentModal = () => {
     handleSubmit,
     setFieldValue,
   } = formik;
+
+  const handleBlur = () => {
+    formik.setFieldTouched("start", true, true);
+  };
 
   useEffect(() => {
     if (selectedAppointment) {
@@ -180,7 +183,7 @@ const ExistingAppointmentModal = () => {
         <ModalContent>
           <form onSubmit={handleSubmit}>
             <div>
-              <div className={"flex items-center gap-4"}>
+              <div className={"flex items-center gap-4"} onBlur={handleBlur}>
                 <label className={"text-xl font-semibold"}>Start: </label>
                 <DateTimePicker
                   value={values.start}

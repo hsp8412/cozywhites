@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "./sidebar/searchBar";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
+import { StaffContext } from "../contexts/staffContext";
 
 const appointmentsData = [
   {
@@ -64,6 +65,8 @@ export default function AppointmentsCard() {
     setOpenExistingAppointmentModal,
     editAppointment,
   } = useContext(AppointmentsContext);
+  const { staff, setDate, setView, setSelectedStaff } =
+    useContext(StaffContext);
   const { appointments } = useContext(AppointmentsContext);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -164,6 +167,13 @@ export default function AppointmentsCard() {
                         className={
                           "bg-green-600 text-white py-3 font-bold hover:scale-110 rounded-lg"
                         }
+                        onClick={() => {
+                          setSelectedStaff(
+                            staff.filter((s) => s.id == appointment.staffId)[0]
+                          );
+                          setView("week");
+                          setDate(appointment.start);
+                        }}
                       >
                         Follow Up
                       </button>

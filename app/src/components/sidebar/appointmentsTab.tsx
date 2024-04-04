@@ -15,9 +15,19 @@ const AppointmentsTab = () => {
     useContext(StaffContext);
   const [searchTerm, setSearchTerm] = useState("");
 
-  let filteredAppointments = appointments;
+  let todayOrFutureAppointments = appointments.filter((a) => {
+    const appointmentDate = new Date(a.start); // Create a copy of the appointment start date
+    appointmentDate.setHours(0, 0, 0, 0); // Set time to start of the day for the appointment date
+
+    const today = new Date(); // Get today's date
+    today.setHours(0, 0, 0, 0); // Set time to start of the day for today
+    console.log(a, appointmentDate >= today);
+    return appointmentDate >= today; // Check if the appointment is today or in the future
+  });
+
+  let filteredAppointments = todayOrFutureAppointments;
   if (searchTerm !== "") {
-    filteredAppointments = appointments.filter((a) => {
+    filteredAppointments = todayOrFutureAppointments.filter((a) => {
       return (
         a.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
         a.staff.toLowerCase().includes(searchTerm.toLowerCase()) ||

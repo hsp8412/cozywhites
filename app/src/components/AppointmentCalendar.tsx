@@ -7,6 +7,7 @@ import AppointmentModal from "./AppointmentModal";
 import { PatientsContext } from "../contexts/patientsContext";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
 import { StaffContext } from "../contexts/staffContext";
+import { toast } from "react-toastify";
 const localizer = momentLocalizer(moment);
 
 export default function AppointmentCalendar() {
@@ -95,21 +96,34 @@ export default function AppointmentCalendar() {
   // };
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    if (
-      slotInfo.start < new Date() ||
-      view === "month" ||
-      slotInfo.start.getHours() === 12 ||
-      slotInfo.start.getHours() < 8 ||
-      slotInfo.start.getHours() > 16 ||
-      slotInfo.start.getDay() % 6 === 0
-    )
-      return;
-
     const conflict = filteredByStaff.some(
       (app) => app.start.toLocaleString() === slotInfo.start.toLocaleString()
     );
 
-    if (conflict) return;
+    if (conflict) {
+      return;
+    }
+
+    if (view === "month") {
+      toast.info("Please switch to week or day view to add an appointment");
+    }
+
+    if (slotInfo.start < new Date()) {
+      toast.info("Please select a timeslot in the future");
+      return;
+    }
+
+    if (
+      slotInfo.start.getHours() === 12 ||
+      slotInfo.start.getHours() < 8 ||
+      slotInfo.start.getHours() > 16 ||
+      slotInfo.start.getDay() % 6 === 0
+    ) {
+      toast.info(
+        "Please select a valid time slot during working hours (Mon - Fri, 8am - 5pm)"
+      );
+      return;
+    }
 
     setSlotInfo(slotInfo);
     setOpen(true);
@@ -158,7 +172,6 @@ export default function AppointmentCalendar() {
     isSelected: any
   ) => {
     let backgroundColor = "#3174ad"; // default color
-    console.log(event);
     if (event.type.toLowerCase() === "filling") {
       backgroundColor = "#1db552";
     } else if (event.type.toLowerCase() === "cleaning") {
@@ -171,7 +184,6 @@ export default function AppointmentCalendar() {
       opacity: 0.8,
       color: "white",
       border: "0px",
-      display: "block",
     };
     return {
       style: style,

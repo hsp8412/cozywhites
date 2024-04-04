@@ -120,7 +120,7 @@ export default function AppointmentCalendar() {
       slotInfo.start.getDay() % 6 === 0
     ) {
       toast.info(
-        "Please select a valid time slot during working hours (Mon - Fri, 8am - 5pm)"
+        "Please select a valid time slot during working hours (Mon-Fri, 8am-11am & 1pm-5pm)"
       );
       return;
     }

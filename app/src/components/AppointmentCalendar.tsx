@@ -153,10 +153,10 @@ export default function AppointmentCalendar() {
   const slotPropGetter = (date: Date) => {
     const noon = new Date();
     noon.setHours(12, 0, 0, 0);
-
+    const isBefore = date < new Date();
     const isNoon = date.getHours() === noon.getHours();
     const isWeekend = date.getDay() % 6 === 0;
-    const isDisabled = isNoon || isWeekend;
+    const isDisabled = isNoon || isWeekend || isBefore;
     if (isDisabled) {
       return {
         className: "disabled-slot",
@@ -180,7 +180,7 @@ export default function AppointmentCalendar() {
     // Add more conditions for other types with their respective colors
     const style = {
       backgroundColor: backgroundColor,
-      borderRadius: "0px",
+      borderRadius: "3px",
       opacity: 0.8,
       color: "white",
       border: "0px",

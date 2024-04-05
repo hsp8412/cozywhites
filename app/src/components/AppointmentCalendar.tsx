@@ -156,7 +156,7 @@ export default function AppointmentCalendar() {
     const isBefore = date < new Date();
     const isNoon = date.getHours() === noon.getHours();
     const isWeekend = date.getDay() % 6 === 0;
-    const isDisabled = isNoon || isWeekend || isBefore;
+    const isDisabled = isNoon || isWeekend;
     if (isDisabled) {
       return {
         className: "disabled-slot",

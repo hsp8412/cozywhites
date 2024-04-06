@@ -1,3 +1,21 @@
+# T02 Group 4 - CPSC 481: Human-Computer Interaction I, Winter 2024
+
+## Members:
+- Kevin Araujo
+- Maxwell Asbjornhus
+- Sipeng He
+- Iain Quayle
+- Anthony Tolentino
+
+## Contact Emails:
+- kevin.araujo1@ucalgary.ca
+- maxwell.asbjornhu1@ucalgary.ca
+- sipeng.he@ucalgary.ca
+- iain.quayle@ucalgary.ca
+- anthony.tolentino@ucalgary.ca
+
+---
+
 # CozyWhites
 
 ## Live Deployment

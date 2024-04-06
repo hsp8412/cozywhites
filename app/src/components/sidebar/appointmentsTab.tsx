@@ -43,18 +43,22 @@ const AppointmentsTab = () => {
   }
 
   return (
-    <div className="tabContainer flex flex-col items-center py-5 w-full">
+    <div className="flex flex-col items-center py-5 w-full flex-grow overflow-hidden">
       <p className={"text-gray-600 font-bold"}>
         Instructions: select an appointment to edit/cancel it.
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       {filteredAppointments.length > 0 ? (
-        <div className={"flex flex-col items-center gap-10 w-9/12 mt-5"}>
+        <div
+          className={
+            "flex flex-col items-center gap-10 mt-4 pt-4 pb-4 w-full overflow-y-auto flex-grow"
+          }
+        >
           {filteredAppointments.map((appointment, index) => {
             return (
               <div
                 key={index}
-                className="w-full flex flex-col justify-center items-center py-4 px-5 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
+                className="w-9/12 flex flex-col justify-center items-center py-4 px-5 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   setSelectedAppointment(appointment);
                   setOpenExistingAppointmentModal(true);

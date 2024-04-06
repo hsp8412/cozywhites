@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import PatientEditForm from "./PatientEditForm";
 import CloseButton from "./closeButton";
+import { formatPhoneNumber } from "../util";
 
 const PatientInfoModal = () => {
   const { selectedPatient, setSelectedPatient, editPatient, setEditPatient } =
@@ -59,7 +60,8 @@ const PatientInfoModal = () => {
               </div>
               <div className="two-items-row">
                 <p className="info-entry">
-                  Phone Number: {selectedPatient?.phoneNumber}
+                  Phone Number:{" "}
+                  {formatPhoneNumber(selectedPatient?.phoneNumber || "")}
                 </p>
                 {/*<p className="info-entry">*/}
                 {/*  Birthdate: {moment(selectedPatient?.dob).format("MM/DD/YYYY")}*/}

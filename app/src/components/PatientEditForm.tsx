@@ -240,7 +240,6 @@ const PatientEditForm = () => {
         />
 
         <Button
-          negative
           onClick={() => setEditPatient(false)}
           content={"Cancel"}
           icon={"cancel"}

@@ -7,6 +7,7 @@ import { View } from "react-big-calendar";
 export const staffData = [
   { id: "1", name: "Dr. Smith", type: "Dentist", avatar: dent },
   { id: "2", name: "John Grey", type: "Hygienist", avatar: hyg },
+  { id: "3", name: "Dr. White", type: "Dentist", avatar: dent },
 ];
 
 type Staff = {

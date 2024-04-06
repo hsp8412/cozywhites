@@ -172,10 +172,17 @@ export default function AppointmentCalendar() {
     isSelected: any
   ) => {
     let backgroundColor = "#3174ad"; // default color
+    let fontSize = "14px";
     if (event.type.toLowerCase() === "filling") {
       backgroundColor = "#1db552";
     } else if (event.type.toLowerCase() === "cleaning") {
       backgroundColor = "#f03e1a";
+    } else if (event.type.toLowerCase() === "crown replacement") {
+      backgroundColor = "#f0a71a";
+      fontSize = "11px";
+    } else if (event.type.toLowerCase() === "gum treatment") {
+      backgroundColor = "#b31af0";
+      fontSize = "12px";
     }
     // Add more conditions for other types with their respective colors
     const style = {
@@ -184,6 +191,7 @@ export default function AppointmentCalendar() {
       opacity: 0.8,
       color: "white",
       border: "0px",
+      fontSize: fontSize,
     };
     return {
       style: style,

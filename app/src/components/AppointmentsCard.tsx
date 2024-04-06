@@ -188,7 +188,7 @@ export default function AppointmentsCard() {
                         setOpenExistingAppointmentModal(true);
                       }}
                     >
-                      Edit
+                      View
                     </button>
                   </div>
                 </div>

@@ -3,6 +3,34 @@ import { View } from "react-big-calendar";
 import App from "../App";
 import { forEach } from "lodash";
 
+export const appTypes = [
+  {
+    key: "Cleaning",
+    text: "Cleaning",
+    value: "Cleaning",
+  },
+  {
+    key: "Checkup",
+    text: "Checkup",
+    value: "Checkup",
+  },
+  {
+    key: "Filling",
+    text: "Filling",
+    value: "Filling",
+  },
+  {
+    key: "Crown Replacement",
+    text: "Crown Replacement",
+    value: "Crown Replacement",
+  },
+  {
+    key: "Gum Treatment",
+    text: "Gum Treatment",
+    value: "Gum Treatment",
+  },
+];
+
 export type Appointment = {
   id: string | number;
   start: Date;

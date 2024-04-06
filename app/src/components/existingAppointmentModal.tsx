@@ -81,7 +81,7 @@ const ExistingAppointmentModal = () => {
             const conflict: any = appointments.filter(
               (a) =>
                 a.id != selectedAppointment?.id &&
-                a.staffId === values?.staff &&
+                a.staffId == values?.staff &&
                 a.start.toLocaleString() === value.toLocaleString()
             );
             console.log(conflict);

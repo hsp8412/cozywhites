@@ -42,7 +42,7 @@ const StaffTab = () => {
                 } w-9/12 flex flex-col justify-center items-center py-2 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer`}
                 onClick={() => {
                   setSelectedStaff(staff);
-                  resetCalendar();
+                  // resetCalendar();
                 }}
               >
                 <div

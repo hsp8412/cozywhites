@@ -14,35 +14,18 @@ import * as Yup from "yup";
 import {
   Appointment,
   AppointmentsContext,
+  appTypes,
 } from "../contexts/appointmentsContext";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
 import CloseButton from "./closeButton";
 
-const options = [
-  {
-    key: "Cleaning",
-    text: "Cleaning",
-    value: "Cleaning",
-  },
-  {
-    key: "Checkup",
-    text: "Checkup",
-    value: "Checkup",
-  },
-  {
-    key: "Filling",
-    text: "Filling",
-    value: "Filling",
-  },
-];
-
 const staffOptions = [
   {
-    key: "Dr.Smith",
-    text: "Dr.Smith",
-    value: "Dr.Smith",
+    key: "Dr. Smith",
+    text: "Dr. Smith",
+    value: "Dr. Smith",
   },
   {
     key: "John Grey",
@@ -166,9 +149,11 @@ export default function AppointmentModal({
     handleChange,
     handleBlur,
     handleSubmit,
+    resetForm,
   } = formik;
 
   const handleClose = () => {
+    resetForm();
     setOpen(false);
   };
 
@@ -224,7 +209,7 @@ export default function AppointmentModal({
               selection
               placeholder="Select a service"
               fluid
-              options={options}
+              options={appTypes}
             />
           </div>
           {errors.type && <p className={"text-red-700"}>{errors.type}*</p>}

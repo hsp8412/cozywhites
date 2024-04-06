@@ -13,9 +13,9 @@ function App() {
   const { selectedStaff, setSelectedStaff } = useContext(StaffContext);
 
   return (
-    <div className={"h-screen flex font-lexend"}>
+    <div className={"flex font-lexend h-screen"}>
       <Sidebar />
-      <div className="w-full h-screen overflow-auto">
+      <div className="w-full overflow-y-auto">
         <TopNav />
         <div className="px-10 py-10 flex justify-center">
           {!selectedStaff && <AppointmentsCard />}

@@ -7,6 +7,7 @@ import AppointmentModal from "./AppointmentModal";
 import { PatientsContext } from "../contexts/patientsContext";
 import { AppointmentsContext } from "../contexts/appointmentsContext";
 import { StaffContext } from "../contexts/staffContext";
+import { toast } from "react-toastify";
 const localizer = momentLocalizer(moment);
 
 export default function AppointmentCalendar() {
@@ -95,21 +96,34 @@ export default function AppointmentCalendar() {
   // };
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    if (
-      slotInfo.start < new Date() ||
-      view === "month" ||
-      slotInfo.start.getHours() === 12 ||
-      slotInfo.start.getHours() < 8 ||
-      slotInfo.start.getHours() > 16 ||
-      slotInfo.start.getDay() % 6 === 0
-    )
-      return;
-
     const conflict = filteredByStaff.some(
       (app) => app.start.toLocaleString() === slotInfo.start.toLocaleString()
     );
 
-    if (conflict) return;
+    if (conflict) {
+      return;
+    }
+
+    if (view === "month") {
+      toast.info("Please switch to week or day view to add an appointment");
+    }
+
+    if (slotInfo.start < new Date()) {
+      toast.info("Please select a timeslot in the future");
+      return;
+    }
+
+    if (
+      slotInfo.start.getHours() === 12 ||
+      slotInfo.start.getHours() < 8 ||
+      slotInfo.start.getHours() > 16 ||
+      slotInfo.start.getDay() % 6 === 0
+    ) {
+      toast.info(
+        "Please select a valid time slot during working hours (Mon-Fri, 8am-11am & 1pm-5pm)"
+      );
+      return;
+    }
 
     setSlotInfo(slotInfo);
     setOpen(true);
@@ -139,7 +153,7 @@ export default function AppointmentCalendar() {
   const slotPropGetter = (date: Date) => {
     const noon = new Date();
     noon.setHours(12, 0, 0, 0);
-
+    const isBefore = date < new Date();
     const isNoon = date.getHours() === noon.getHours();
     const isWeekend = date.getDay() % 6 === 0;
     const isDisabled = isNoon || isWeekend;
@@ -158,20 +172,26 @@ export default function AppointmentCalendar() {
     isSelected: any
   ) => {
     let backgroundColor = "#3174ad"; // default color
-    console.log(event);
+    let fontSize = "14px";
     if (event.type.toLowerCase() === "filling") {
       backgroundColor = "#1db552";
     } else if (event.type.toLowerCase() === "cleaning") {
       backgroundColor = "#f03e1a";
+    } else if (event.type.toLowerCase() === "crown replacement") {
+      backgroundColor = "#f0a71a";
+      fontSize = "11px";
+    } else if (event.type.toLowerCase() === "gum treatment") {
+      backgroundColor = "#b31af0";
+      fontSize = "12px";
     }
     // Add more conditions for other types with their respective colors
     const style = {
       backgroundColor: backgroundColor,
-      borderRadius: "0px",
+      borderRadius: "3px",
       opacity: 0.8,
       color: "white",
       border: "0px",
-      display: "block",
+      fontSize: fontSize,
     };
     return {
       style: style,

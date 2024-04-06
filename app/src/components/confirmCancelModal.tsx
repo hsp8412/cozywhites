@@ -50,6 +50,17 @@ const ConfirmCancelModal = ({ open, setOpen }: any) => {
         <button
           className="px-3 py-2 bg-rose-500 rounded text-white hover:bg-rose-300 font-semibold"
           onClick={() => {
+            if (
+              selectedAppointment &&
+              selectedAppointment?.start < new Date()
+            ) {
+              setOpen(false);
+              setOpenExistingAppointmentModal(false);
+              toast.error(
+                "You cannot cancel an appointment that has already started."
+              );
+              return;
+            }
             if (selectedAppointment) {
               deleteAppointment(selectedAppointment.id);
               setOpenExistingAppointmentModal(false);

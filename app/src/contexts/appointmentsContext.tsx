@@ -3,6 +3,34 @@ import { View } from "react-big-calendar";
 import App from "../App";
 import { forEach } from "lodash";
 
+export const appTypes = [
+  {
+    key: "Cleaning",
+    text: "Cleaning",
+    value: "Cleaning",
+  },
+  {
+    key: "Checkup",
+    text: "Checkup",
+    value: "Checkup",
+  },
+  {
+    key: "Filling",
+    text: "Filling",
+    value: "Filling",
+  },
+  {
+    key: "Crown Replacement",
+    text: "Crown Replacement",
+    value: "Crown Replacement",
+  },
+  {
+    key: "Gum Treatment",
+    text: "Gum Treatment",
+    value: "Gum Treatment",
+  },
+];
+
 export type Appointment = {
   id: string | number;
   start: Date;
@@ -54,7 +82,7 @@ const initialAppointments: Appointment[] = [
     title: "Checkup with Alice Green",
     type: "Checkup",
     client: "Alice Green",
-    staff: "Dr.Smith",
+    staff: "Dr. Smith",
     clientId: 1,
     staffId: 1,
     checkIn: false,
@@ -66,7 +94,7 @@ const initialAppointments: Appointment[] = [
     title: "Cleaning with James Brown",
     type: "Cleaning",
     client: "James Brown",
-    staff: "Dr.Smith",
+    staff: "Dr. Smith",
     clientId: 2,
     staffId: 1,
     checkIn: false,
@@ -78,7 +106,7 @@ const initialAppointments: Appointment[] = [
     title: "Filling with John Doe",
     type: "Filling",
     client: "John Doe",
-    staff: "Dr.Smith",
+    staff: "Dr. Smith",
     clientId: 3,
     staffId: 1,
     checkIn: false,
@@ -114,7 +142,19 @@ const initialAppointments: Appointment[] = [
     title: "Cleaning with Tom Lee",
     type: "Cleaning",
     client: "Tom Lee",
-    staff: "Dr.Smith",
+    staff: "Dr. Smith",
+    clientId: 5,
+    staffId: 1,
+    checkIn: false,
+  },
+  {
+    id: "7",
+    start: new Date("2024-03-29T09:00:00"),
+    end: new Date("2024-03-29T10:00:00"),
+    title: "Cleaning with Tom Lee",
+    type: "Cleaning",
+    client: "Tom Lee",
+    staff: "Dr. Smith",
     clientId: 5,
     staffId: 1,
     checkIn: false,
@@ -151,8 +191,8 @@ export const AppointmentsProvider = ({ children }: Props) => {
     appointmentId: string | number,
     updatedAppointment: Appointment
   ) => {
-    setAppointments(
-      appointments.map((appointment) =>
+    setAppointments((prev) =>
+      prev.map((appointment) =>
         appointment.id === appointmentId ? updatedAppointment : appointment
       )
     );

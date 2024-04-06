@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import {
   Appointment,
   AppointmentsContext,
+  appTypes,
 } from "../contexts/appointmentsContext";
 import { Patient, PatientsContext } from "../contexts/patientsContext";
 import {
@@ -21,29 +22,16 @@ import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarCheck,
+  faCircleInfo,
+  faHospitalUser,
+} from "@fortawesome/free-solid-svg-icons";
 import CloseButton from "./closeButton";
-import { formatDateTime } from "../util";
+import { formatDateTime, formatPhoneNumber } from "../util";
 import { start } from "repl";
 import { forEach } from "lodash";
-
-const options = [
-  {
-    key: "Cleaning",
-    text: "Cleaning",
-    value: "Cleaning",
-  },
-  {
-    key: "Checkup",
-    text: "Checkup",
-    value: "Checkup",
-  },
-  {
-    key: "Filling",
-    text: "Filling",
-    value: "Filling",
-  },
-];
+import { StaffContext } from "../contexts/staffContext";
 
 const ExistingAppointmentModal = () => {
   const { patients } = useContext(PatientsContext);
@@ -60,12 +48,25 @@ const ExistingAppointmentModal = () => {
     setOpenExistingAppointmentModal,
   } = useContext(AppointmentsContext);
 
+  const { staff, setSelectedStaff, setDate } = useContext(StaffContext);
+
   const [client, setClient] = React.useState<Patient | null>(null);
+
+  const staffOptions = staff.map((s) => ({
+    key: s.id,
+    text: s.name,
+    value: s.id,
+  }));
+
+  const staffInfo = staff.filter(
+    (s) => s.id == selectedAppointment?.staffId
+  )[0];
 
   const formik = useFormik({
     initialValues: {
       start: selectedAppointment?.start || new Date(),
       type: selectedAppointment?.type || "",
+      staff: staffInfo?.id || "",
     },
     validationSchema: Yup.object({
       start: Yup.date()
@@ -74,10 +75,13 @@ const ExistingAppointmentModal = () => {
           "conflict-check",
           "This timeslot is already booked",
           function (value) {
-            const conflict = appointments.filter(
+            console.log(values.staff);
+            console.log(values.start);
+            console.log("validate!");
+            const conflict: any = appointments.filter(
               (a) =>
                 a.id != selectedAppointment?.id &&
-                a.staffId === selectedAppointment?.staffId &&
+                a.staffId === values?.staff &&
                 a.start.toLocaleString() === value.toLocaleString()
             );
             console.log(conflict);
@@ -101,23 +105,33 @@ const ExistingAppointmentModal = () => {
           }
         ),
       type: Yup.string().required("Required"),
+      staff: Yup.string().required("Required"),
     }),
     enableReinitialize: true,
     onSubmit: (values) => {
+      if (selectedAppointment && selectedAppointment.start < new Date()) {
+        toast.error("You cannot edit an appointment that has already started");
+        setOpenExistingAppointmentModal(false);
+        setSelectedAppointment(null);
+        return;
+      }
       if (selectedAppointment) {
+        const staffInfo = staff.filter((s) => s.id == values.staff)[0];
         const updatedAppointment: Appointment = {
           ...selectedAppointment,
           start: values.start,
           end: new Date(values.start.getTime() + 60 * 60 * 1000),
           type: values.type,
           title: `${values.type} with ${client?.name}`,
+          staffId: values.staff,
+          staff: staffInfo?.name || "",
         };
-        console.log(updatedAppointment);
         editAppointment(selectedAppointment.id, updatedAppointment);
-        // setSelectedAppointment(null);
         toast.success("Appointment updated successfully");
         setOpenExistingAppointmentModal(false);
         setSelectedAppointment(null);
+        setSelectedStaff(staffInfo);
+        setDate(values.start);
       }
     },
   });
@@ -129,7 +143,12 @@ const ExistingAppointmentModal = () => {
     handleChange,
     handleSubmit,
     setFieldValue,
+    validateField,
   } = formik;
+
+  const handleBlur = () => {
+    formik.setFieldTouched("start", true, true);
+  };
 
   useEffect(() => {
     if (selectedAppointment) {
@@ -180,7 +199,12 @@ const ExistingAppointmentModal = () => {
         <ModalContent>
           <form onSubmit={handleSubmit}>
             <div>
-              <div className={"flex items-center gap-4"}>
+              <div className={"text-2xl font-bold mb-5 text-primary"}>
+                <FontAwesomeIcon icon={faCircleInfo} className={"me-2 "} />
+                Appointment Info
+              </div>
+
+              <div className={"flex items-center gap-4"} onBlur={handleBlur}>
                 <label className={"text-xl font-semibold"}>Start: </label>
                 <DateTimePicker
                   value={values.start}
@@ -189,7 +213,7 @@ const ExistingAppointmentModal = () => {
                   }}
                 />
               </div>
-              {touched.start && errors.start && (
+              {errors.start && (
                 <p className={"text-red-600"}>{errors.start as string}</p>
               )}
               <div className={"flex items-center gap-4 mt-4"}>
@@ -213,14 +237,43 @@ const ExistingAppointmentModal = () => {
                   selection
                   placeholder="Select a service"
                   fluid
-                  options={options}
+                  options={appTypes}
                 />
               </div>
-              {errors.type && <p className={"text-red-700"}>{errors.type}*</p>}
-              <h3>Patient: {client?.name}</h3>
-              <h3>Staff: {selectedAppointment?.staff}</h3>
-              <h3>Phone: {client?.phoneNumber}</h3>
-              <h3>Email: {client?.email ? client.email : "No data"}</h3>
+              <div className="inputPair required flex items-center mt-4">
+                <label className={"me-2 font-semibold text-xl"}>Staff:</label>
+                <Dropdown
+                  value={values.staff}
+                  onChange={(e, data) => {
+                    setFieldValue("staff", data.value as string);
+                  }}
+                  onBlur={() => {
+                    validateField("start");
+                  }}
+                  search
+                  selection
+                  placeholder="Select a staff member"
+                  fluid
+                  options={staffOptions}
+                />
+              </div>
+              {errors.staff && (
+                <p className={"text-red-700"}>{errors.staff}*</p>
+              )}
+              <div className={"text-2xl font-bold my-5 text-primary"}>
+                <FontAwesomeIcon icon={faHospitalUser} className={"me-2 "} />
+                Patient Info
+              </div>
+              <div className={"text-xl mb-4 text-xl font-semibold"}>
+                Patient: {client?.name}
+              </div>
+              {/*<h3 className={"text-xl"}>Staff: {selectedAppointment?.staff}</h3>*/}
+              <div className={"text-xl mb-4 text-xl font-semibold"}>
+                Phone: {formatPhoneNumber(client?.phoneNumber || "")}
+              </div>
+              <div className={"text-xl mb-4 text-xl font-semibold"}>
+                Email: {client?.email ? client.email : "No data"}
+              </div>
             </div>
             <div className={"mt-4 flex justify-end gap-3"}>
               <Button

@@ -15,9 +15,19 @@ const AppointmentsTab = () => {
     useContext(StaffContext);
   const [searchTerm, setSearchTerm] = useState("");
 
-  let filteredAppointments = appointments;
+  let todayOrFutureAppointments = appointments.filter((a) => {
+    const appointmentDate = new Date(a.start); // Create a copy of the appointment start date
+    appointmentDate.setHours(0, 0, 0, 0); // Set time to start of the day for the appointment date
+
+    const today = new Date(); // Get today's date
+    today.setHours(0, 0, 0, 0); // Set time to start of the day for today
+    console.log(a, appointmentDate >= today);
+    return appointmentDate >= today; // Check if the appointment is today or in the future
+  });
+
+  let filteredAppointments = todayOrFutureAppointments;
   if (searchTerm !== "") {
-    filteredAppointments = appointments.filter((a) => {
+    filteredAppointments = todayOrFutureAppointments.filter((a) => {
       return (
         a.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
         a.staff.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -33,18 +43,22 @@ const AppointmentsTab = () => {
   }
 
   return (
-    <div className="tabContainer flex flex-col items-center py-5 w-full">
+    <div className="flex flex-col items-center py-5 w-full flex-grow overflow-hidden">
       <p className={"text-gray-600 font-bold"}>
         Instructions: select an appointment to edit/cancel it.
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       {filteredAppointments.length > 0 ? (
-        <div className={"flex flex-col items-center gap-10 w-9/12 mt-5"}>
+        <div
+          className={
+            "flex flex-col items-center gap-10 mt-4 pt-4 pb-4 w-full overflow-y-auto flex-grow"
+          }
+        >
           {filteredAppointments.map((appointment, index) => {
             return (
               <div
                 key={index}
-                className="w-full flex flex-col justify-center items-center py-4 px-5 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
+                className="w-9/12 flex flex-col justify-center items-center py-4 px-5 shadow-xl rounded bg-tertiary hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   setSelectedAppointment(appointment);
                   setOpenExistingAppointmentModal(true);
